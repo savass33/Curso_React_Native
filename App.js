@@ -1,25 +1,16 @@
-// Importa hooks e componentes do React Native necessários para manipulação de estado e construção da interface
-import { use, useState } from "react";
-import {
-  StyleSheet,
-  Button,
-  TextInput,
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { useState } from "react";
+import { StyleSheet, Button, View, Text, FlatList } from "react-native";
+
+import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 // Função principal que define o componente da aplicação
 export default function App() {
-  // Estado para armazenar o texto digitado pelo usuário
-  const [enteredGoalText, setEnteredGoalText] = useState("");
-
   // Estado para armazenar a lista de metas adicionadas
   const [courseGoals, setCourseGoals] = useState([]);
 
   // Função para validar o texto inserido: verifica se está vazio ou duplicado
-  function verifyInput() {
+  function verifyInput(enteredGoalText) {
     if (enteredGoalText.trim().length === 0) {
       alert("Por favor, digite uma meta válida!");
       return false;
@@ -30,20 +21,14 @@ export default function App() {
     return true;
   }
 
-  // Função chamada toda vez que o usuário digita no TextInput
-  function goalInputHandler(enteredText) {
-    setEnteredGoalText(enteredText); // Atualiza o estado com o novo valor
-  }
-
   // Função chamada ao pressionar o botão "Adicionar"
-  function addGoalHandler() {
-    if (verifyInput()) {
+  function addGoalHandler(enteredGoalText) {
+    if (verifyInput(enteredGoalText)) {
       // Adiciona uma nova meta ao estado, com texto e chave única
       setCourseGoals((currentCourseGoals) => [
         ...currentCourseGoals,
         { text: enteredGoalText, key: Math.random().toString() },
       ]);
-      setEnteredGoalText(""); // Limpa o campo de texto após adicionar
     }
   }
 
@@ -57,15 +42,7 @@ export default function App() {
   return (
     <View style={styles.appContainer}>
       {/* Área de entrada de texto e botão de adicionar */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Digite sua meta"
-          value={enteredGoalText}
-          onChangeText={goalInputHandler}
-        />
-        <Button title="Adicionar" onPress={addGoalHandler} color="#e2e2e2" />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
 
       {/* Área onde as metas são exibidas */}
       <View style={styles.goalsContainer}>
@@ -76,14 +53,10 @@ export default function App() {
         <FlatList
           data={courseGoals} // Fonte de dados da lista
           renderItem={(itemData) => {
-            return (
-              <View style={styles.goalItem}>
-                <Text style={styles.goalText}>{itemData.item.text}</Text>
-              </View>
-            );
+            return <GoalItem text={itemData.item.text} />; // Renderiza cada item da lista usando o componente GoalItem
           }}
           keyExtractor={(item, index) => {
-            return item.key; // Define qual chave usar para identificar cada item
+            return item.id; // Define qual chave usar para identificar cada item
           }}
         />
       </View>
@@ -100,22 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     paddingHorizontal: 16,
-    backgroundColor: "#ffffff", // Corrigido: "#white" não é uma cor válida
-  },
-  inputContainer: {
-    flex: 1, // Ocupa 1 parte do layout total
-    flexDirection: "row", // Alinha elementos lado a lado
-    justifyContent: "space-between", // Espaço entre botão e campo
-    alignItems: "center", // Centraliza verticalmente
-    marginBottom: 0,
-    marginTop: 0,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    width: "70%", // Ocupa 70% da largura disponível
-    padding: 15,
-    borderRadius: 6,
+    backgroundColor: "#ffffff",
   },
   goalsTitle: {
     marginVertical: 1,
@@ -123,27 +81,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "#e2e2e2",
     color: "black",
-    textAlign: "center", // Centraliza o texto
+    textAlign: "center",
   },
   goalsContainer: {
-    flex: 4, // Ocupa mais espaço que a inputContainer
-  },
-  goalItem: {
-    marginVertical: 6,
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: "#e2e2e2",
-    color: "black",
-  },
-  button: {
-    // Este estilo não está sendo utilizado diretamente
-    color: "white",
-    height: "100%",
-    width: "30%",
-    borderRadius: 20,
-    backgroundColor: "#e2e2e2",
-  },
-  goalText: {
-    color: "white", // Define a cor do texto dentro da meta
+    flex: 4,
   },
 });
