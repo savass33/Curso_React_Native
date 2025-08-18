@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet, Modal } from "react-native";
 
 function GoalInput(props) {
   // Estado para armazenar o texto digitado pelo usuário
@@ -15,16 +15,30 @@ function GoalInput(props) {
     setEnteredGoalText(""); // Limpa o campo de texto após adicionar
   }
 
+  function cancelHandler() {
+    props.onCancel();
+    setEnteredGoalText(""); // Limpa o campo ao cancelar
+  }
+
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Digite sua meta"
-        value={enteredGoalText}
-        onChangeText={goalInputHandler}
-      />
-      <Button title="Adicionar" onPress={addGoalHandler} color="#e2e2e2" />
-    </View>
+    <Modal visible={props.visible} animationType="fade">
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Digite sua meta"
+          value={enteredGoalText}
+          onChangeText={goalInputHandler}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={styles.button}>
+            <Button title="Adicionar" onPress={addGoalHandler} />
+          </View>
+          <View style={styles.button}>
+            <Button title="Cancelar" onPress={cancelHandler} />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -33,17 +47,26 @@ export default GoalInput;
 const styles = StyleSheet.create({
   inputContainer: {
     flex: 1, // Ocupa 1 parte do layout total
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 0,
+    marginBottom: 10,
     marginTop: 0,
+    padding: 16,
   },
   textInput: {
     borderWidth: 1,
     borderColor: "#cccccc",
-    width: "70%",
+    width: "100%",
     padding: 15,
     borderRadius: 6,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    marginTop: 15,
+  },
+  button: {
+    width: "100px",
+    marginHorizontal: 8,
   },
 });

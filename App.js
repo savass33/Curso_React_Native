@@ -9,6 +9,16 @@ export default function App() {
   // Estado para armazenar a lista de metas adicionadas
   const [courseGoals, setCourseGoals] = useState([]);
 
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  function startAddGoalHandler() {
+    setModalIsVisible(true);
+  }
+
+  function endAddGoalHandler() {
+    setModalIsVisible(false);
+  }
+
   // Função para validar o texto inserido: verifica se está vazio ou duplicado
   function verifyInput(enteredGoalText) {
     if (enteredGoalText.trim().length === 0) {
@@ -27,22 +37,38 @@ export default function App() {
       // Adiciona uma nova meta ao estado, com texto e chave única
       setCourseGoals((currentCourseGoals) => [
         ...currentCourseGoals,
-        { text: enteredGoalText, key: Math.random().toString() },
+        { text: enteredGoalText, id: Math.random().toString() },
       ]);
+      endAddGoalHandler();
     }
+  }
+
+  function deleteGoalHandler(id) {
+    setCourseGoals((currentCourseGoals) => {
+      // O método .filter() percorre esse array e retorna um novo array apenas com os itens que passarem no teste fornecido na função.
+      return currentCourseGoals.filter((goal) => goal.id !== id); // Remove a meta com o ID correspondente
+    });
   }
 
   // Função chamada ao pressionar o botão "Limpar"
   function clearGoals() {
     setCourseGoals([]); // Limpa todas as metas
-    setEnteredGoalText(""); // Limpa o campo de entrada
   }
 
   // JSX que representa a interface do aplicativo
   return (
     <View style={styles.appContainer}>
+      <Button
+        title="Add New Goal"
+        color="#06023dff"
+        onPress={startAddGoalHandler}
+      />
       {/* Área de entrada de texto e botão de adicionar */}
-      <GoalInput onAddGoal={addGoalHandler} />
+      <GoalInput
+        visible={modalIsVisible}
+        onAddGoal={addGoalHandler}
+        onCancel={endAddGoalHandler}
+      />
 
       {/* Área onde as metas são exibidas */}
       <View style={styles.goalsContainer}>
@@ -53,7 +79,13 @@ export default function App() {
         <FlatList
           data={courseGoals} // Fonte de dados da lista
           renderItem={(itemData) => {
-            return <GoalItem text={itemData.item.text} />; // Renderiza cada item da lista usando o componente GoalItem
+            return (
+              <GoalItem
+                text={itemData.item.text}
+                onDeleteItem={deleteGoalHandler}
+                id={itemData.item.id}
+              /> // Renderiza cada item da lista usando o componente GoalItem
+            );
           }}
           keyExtractor={(item, index) => {
             return item.id; // Define qual chave usar para identificar cada item
@@ -62,7 +94,7 @@ export default function App() {
       </View>
 
       {/* Botão para limpar a lista */}
-      <Button title="Limpar" onPress={clearGoals} color="#e2e2e2" />
+      <Button title="Limpar" onPress={clearGoals} color="#06023dff" />
     </View>
   );
 }
@@ -73,14 +105,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     paddingHorizontal: 16,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#6695ebff",
   },
   goalsTitle: {
-    marginVertical: 1,
+    marginVertical: 10,
     padding: 8,
     borderRadius: 6,
-    backgroundColor: "#e2e2e2",
-    color: "black",
+    backgroundColor: "#06023dff",
+    color: "white",
     textAlign: "center",
   },
   goalsContainer: {
