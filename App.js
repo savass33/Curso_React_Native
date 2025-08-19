@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Button, View, Text, FlatList } from "react-native";
+import { Status, StatusBar } from "expo-status-bar";
 
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
@@ -57,45 +58,48 @@ export default function App() {
 
   // JSX que representa a interface do aplicativo
   return (
-    <View style={styles.appContainer}>
-      <Button
-        title="Add New Goal"
-        color="#06023dff"
-        onPress={startAddGoalHandler}
-      />
-      {/* Área de entrada de texto e botão de adicionar */}
-      <GoalInput
-        visible={modalIsVisible}
-        onAddGoal={addGoalHandler}
-        onCancel={endAddGoalHandler}
-      />
-
-      {/* Área onde as metas são exibidas */}
-      <View style={styles.goalsContainer}>
-        <Text style={styles.goalsTitle}>Minhas Metas</Text>
-
-        {/* FlatList é melhor para listas porque renderiza apenas os itens visíveis na tela, economizando recursos.
-            ScrollView pode ser usado, mas FlatList é mais eficiente para listas longas */}
-        <FlatList
-          data={courseGoals} // Fonte de dados da lista
-          renderItem={(itemData) => {
-            return (
-              <GoalItem
-                text={itemData.item.text}
-                onDeleteItem={deleteGoalHandler}
-                id={itemData.item.id}
-              /> // Renderiza cada item da lista usando o componente GoalItem
-            );
-          }}
-          keyExtractor={(item, index) => {
-            return item.id; // Define qual chave usar para identificar cada item
-          }}
+    <>
+      <StatusBar style="dark" />
+      <View style={styles.appContainer}>
+        <Button
+          title="Add New Goal"
+          color="#06023dff"
+          onPress={startAddGoalHandler}
         />
-      </View>
+        {/* Área de entrada de texto e botão de adicionar */}
+        <GoalInput
+          visible={modalIsVisible}
+          onAddGoal={addGoalHandler}
+          onCancel={endAddGoalHandler}
+        />
 
-      {/* Botão para limpar a lista */}
-      <Button title="Limpar" onPress={clearGoals} color="#06023dff" />
-    </View>
+        {/* Área onde as metas são exibidas */}
+        <View style={styles.goalsContainer}>
+          <Text style={styles.goalsTitle}>Minhas Metas</Text>
+
+          {/* FlatList é melhor para listas porque renderiza apenas os itens visíveis na tela, economizando recursos.
+              ScrollView pode ser usado, mas FlatList é mais eficiente para listas longas */}
+          <FlatList
+            data={courseGoals} // Fonte de dados da lista
+            renderItem={(itemData) => {
+              return (
+                <GoalItem
+                  text={itemData.item.text}
+                  onDeleteItem={deleteGoalHandler}
+                  id={itemData.item.id}
+                /> // Renderiza cada item da lista usando o componente GoalItem
+              );
+            }}
+            keyExtractor={(item, index) => {
+              return item.id; // Define qual chave usar para identificar cada item
+            }}
+          />
+        </View>
+
+        {/* Botão para limpar a lista */}
+        <Button title="Limpar" onPress={clearGoals} color="#06023dff" />
+      </View>
+    </>
   );
 }
 
@@ -105,7 +109,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     paddingHorizontal: 16,
-    backgroundColor: "#6695ebff",
   },
   goalsTitle: {
     marginVertical: 10,

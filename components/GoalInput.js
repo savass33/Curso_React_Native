@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Modal } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Modal,
+  Image,
+} from "react-native";
 
 function GoalInput(props) {
   // Estado para armazenar o texto digitado pelo usuário
@@ -23,6 +30,7 @@ function GoalInput(props) {
   return (
     <Modal visible={props.visible} animationType="fade">
       <View style={styles.inputContainer}>
+        <Image style={styles.image} source={require("../assets/favicon.png")} />
         <TextInput
           style={styles.textInput}
           placeholder="Digite sua meta"
@@ -50,16 +58,23 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
-    marginTop: 0,
     padding: 16,
+    backgroundColor: "#6695ebff",
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "#cccccc",
+    borderColor: "#e4d0ff",
+    backgroundColor: "#d0d5ffff",
     width: "100%",
+    color: "#120438",
+    borderRadius: 8,
     padding: 15,
-    borderRadius: 6,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 20,
+    opacity: 10,
   },
   buttonContainer: {
     flexDirection: "row",
